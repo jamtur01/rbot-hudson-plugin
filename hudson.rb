@@ -27,11 +27,11 @@ class HudsonPlugin < Plugin
          def help(plugin, topic="")
                  case topic
                          when '':
-                                "This plug-in interacts with the Hudson test server." +
-                                "Current the plug-in only triggers build (see subtopic " +
+                                "This plug-in interacts with the Hudson test server. " +
+                                "Currently the plug-in only triggers build (see subtopic " +
                                 "'trigger')."
                          when 'trigger':
-                                "Trigger project => Trigger the build of a project"
+                                "trigger project => Trigger the build of a project"
                  end
          end 
 
@@ -49,7 +49,7 @@ class HudsonPlugin < Plugin
                     token = project_token(project)
                     return [nil, "I don't have a project map for this channel - please add a projectmap for this channel"] if token.nil?
 
-                    puts "Triggering in #{channel} the #{project} at #{base} with #{token}"
+                    m.reply "Triggering in #{channel} the #{project} at #{base} with #{token}"
              end
 
          end
