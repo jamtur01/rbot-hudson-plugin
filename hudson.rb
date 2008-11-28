@@ -1,11 +1,7 @@
-# redmine_urls crudely updated by James Turnbull 
-# based on trac_urls written by wombie
+# hudson redmine_by James Turnbull 
 # Needs to go in the plugins dir for rbot
 
-require 'net/https'
 require 'uri'
-require 'rubygems'
-require 'hpricot'
 require 'open-uri'
 
 class InvalidHudson < Exception
@@ -25,39 +21,43 @@ class HudsonPlugin < Plugin
                          "Format for each entry in the list is project:authtoken.")
 
          def help(plugin, topic="")
-                return "This plug-in interacts with the Hudson test server. " +
-                        "Currently the plug-in only triggers builds."
+                "This plug-in interacts with the Hudson test server. " +
+                "Currently the plug-in only triggers builds."
          end 
 
          def trigger(m, params)
+               unless params[:project]
+                  m.reply "Incorrect usage: " + help(m.plugin)
+               else
+                  channel = m.target
+                  debug "The channel is #{channel}"
+                  
+                  project_name = URI.escape(params[:project].to_s)
+                  debug "The project name is #{project_name}"                    
 
-             unless params[:project]
-                    m.reply "Incorrect usage: " + help(m.plugin)
-             else
-                    channel = m.target
-                    project = params[:project].to_s
+                  base = base_url(channel) 
+                  debug "The Hudson URL is #{base}"
+                  return [nil, "I don't know about a Hudson URL for this channel - please add a channelmap for this channel"] if base.nil?
                     
-                    base = base_url(channel) 
-                    return [nil, "I don't know about a Hudson URL for this channel - please add a channelmap for this channel"] if base.nil?
-                    
-                    token = project_token(project)
-                    return [nil, "I don't have a project map for this channel - please add a projectmap for this channel"] if token.nil?
+                  token = project_token(params[:project].to_s)
+                  debug "The token is #{token}"
+                  return [nil, "I don't have a project map for this channel - please add a projectmap for this channel"] if token.nil?
 
-                    debug "Triggering in #{channel} the #{project} at #{base} with #{token}"
-                    m.reply "Triggering in #{channel} the #{project} at #{base} with #{token}"
-                   
-             end
+                  debug "Triggering in #{channel} the #{project_name} at #{base} with #{token}"
+  
+                  url = trigger_url(base, project_name, token)
 
-         end
+                  debug "The Hudson triggerign URL is #{url}"
+           
+                  trigger_project(url)
 
-         def trigger_project
-                debug "Expanding reference #{ref} in #{channel}"
-                base = base_url(channel)
+                  m.reply "Triggering a build of #{project_name}"
+               end
+        end
 
-             puts open('http://hudson.url', 'User-Agent' => 'Ruby-Wget').read
-
-
-         end
+        def trigger_project(url)
+               puts open("#{url}", "User-Agent" => "Ruby-Wget").read
+        end
 
         private 	
         def project_token(project)
@@ -70,11 +70,13 @@ class HudsonPlugin < Plugin
 		e.gsub(/^#{target}:/, '') unless e.nil?
 	end
 	
-	def trigger_url(base, project, token)
-		base + '/job/' + project + '/build?token=' + token
+	def trigger_url(base, project_name, token)
+	        base + '/job/' + project_name + '/build?token=' + token
 	end
 
 end
 
 plugin = HudsonPlugin.new
-plugin.map 'trigger :project', :action => 'trigger'
+
+plugin.map "trigger *project", :action => "trigger"
+
