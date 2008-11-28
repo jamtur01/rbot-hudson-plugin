@@ -50,6 +50,8 @@ class HudsonPlugin < Plugin
                     return [nil, "I don't have a project map for this channel - please add a projectmap for this channel"] if token.nil?
 
                     debug "Triggering in #{channel} the #{project} at #{base} with #{token}"
+                    m.reply "Triggering in #{channel} the #{project} at #{base} with #{token}"
+                   
              end
 
          end
