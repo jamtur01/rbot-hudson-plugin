@@ -25,14 +25,8 @@ class HudsonPlugin < Plugin
                          "Format for each entry in the list is project:authtoken.")
 
          def help(plugin, topic="")
-                 case topic
-                         when '':
-                                "This plug-in interacts with the Hudson test server. " +
-                                "Currently the plug-in only triggers build (see subtopic " +
-                                "'trigger')."
-                         when 'trigger':
-                                "trigger project => Trigger the build of a project"
-                 end
+                return "This plug-in interacts with the Hudson test server. " +
+                        "Currently the plug-in only triggers builds."
          end 
 
          def trigger(m, params)
@@ -83,4 +77,4 @@ class HudsonPlugin < Plugin
 end
 
 plugin = HudsonPlugin.new
-plugin.map 'trigger *project', :action => 'trigger'
+plugin.map 'trigger :project', :action => 'trigger'
