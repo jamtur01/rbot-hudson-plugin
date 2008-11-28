@@ -24,7 +24,13 @@ class HudsonPlugin < Plugin
                          "Format for each entry in the list is #channel:project.")
 
          def help(plugin, topic="")
-                "hudson project => Trigger the build of a project"
+                 case topic
+                         when '':
+                                "This plug-in interacts with the Hudson test server." +
+                                "Current the plug-in only triggers build (see subtopic " +
+                                "'trigger')."
+                         when 'trigger':
+                                "Trigger project => Trigger the build of a project"
          end 
 
          def privmsg(m)
