@@ -41,7 +41,7 @@ class HudsonPlugin < Plugin
                     m.reply "Incorrect usage: " + help(m.plugin)
              else
                     channel = m.target
-                    project = params[:project]
+                    project = params
                     
                     base = base_url(channel) 
                     return [nil, "I don't know about a Hudson URL for this channel - please add a channelmap for this channel"] if base.nil?
