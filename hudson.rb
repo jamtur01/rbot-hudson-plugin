@@ -83,4 +83,4 @@ class HudsonPlugin < Plugin
 end
 
 plugin = HudsonPlugin.new
-plugin.map 'trigger :project', :action => 'trigger'
+plugin.map 'trigger *project', :action => 'trigger'
