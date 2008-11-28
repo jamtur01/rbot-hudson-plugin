@@ -51,6 +51,8 @@ class HudsonPlugin < Plugin
                     puts "Triggering in #{channel} the #{project} at #{base} with #{token}"
              end
 
+         end
+
          def trigger_project
                 debug "Expanding reference #{ref} in #{channel}"
                 base = base_url(channel)
