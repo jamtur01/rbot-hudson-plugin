@@ -32,6 +32,7 @@ class HudsonPlugin < Plugin
                                 "'trigger')."
                          when 'trigger':
                                 "Trigger project => Trigger the build of a project"
+                 end
          end 
 
          def trigger(m, params)
@@ -68,9 +69,6 @@ class HudsonPlugin < Plugin
                p.gsub(	/^#{project}:/, '') unless p.nil?
         end
 
-	# Return the base URL for the channel (passed in as +target+), or +nil+
-	# if the channel isn't in the channelmap.
-	#
 	def base_url(target)
 		e = @bot.config['hudson.channelmap'].find {|c| c =~ /^#{target}:/ }
 		e.gsub(/^#{target}:/, '') unless e.nil?
@@ -83,5 +81,4 @@ class HudsonPlugin < Plugin
 end
 
 plugin = HudsonPlugin.new
-plugin.register("trigger")
 plugin.map 'trigger :project', :action => 'trigger'
